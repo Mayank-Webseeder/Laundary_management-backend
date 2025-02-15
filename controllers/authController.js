@@ -5,10 +5,9 @@ const sendOTP = require("../utils/sendEmail");
 
 exports.signup = async (req, res) => {
   const { fullname, email, password } = req.body;
-  console.log(req.body);
+ 
   try {
     let user = await User.findOne({ email });
-    console.log(user);
 
     if (user) return res.status(400).json({ msg: "User already exists" });
 
@@ -22,7 +21,6 @@ exports.signup = async (req, res) => {
 
     res.status(200).json({ msg: "OTP sent to your email. Please verify." });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ msg: "Server Error" });
   }
 };
@@ -55,7 +53,6 @@ exports.verifyOTP = async (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "Invalid credentials" });

@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const sendOTP = require("../utils/sendEmail");
 
+
 exports.signup = async (req, res) => {
   const { fullname, email, password } = req.body;
  
@@ -70,4 +71,29 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.getUserProfile = async (req, res) => {
+  console.log(req.header);
 
+  try {
+    const user = await User.findById(req.user.userId).select("fullName email");
+    if (!user) return res.status(404).json({ msg: "User not found" });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ msg: "Server error", error: error.message });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) return res.status(400).json({ msg: "Incorrect old password" });
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.status(200).json({ msg: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ msg: "Server error", error: error.message });
+  }
+};

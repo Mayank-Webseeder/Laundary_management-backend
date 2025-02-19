@@ -72,8 +72,6 @@ exports.login = async (req, res) => {
 };
 
 exports.getUserProfile = async (req, res) => {
-  console.log(req.header);
-
   try {
     const user = await User.findById(req.user.userId).select("fullName email");
     if (!user) return res.status(404).json({ msg: "User not found" });

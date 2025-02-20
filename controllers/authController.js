@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const sendOTP = require("../utils/sendEmail");
 
+const LaundryCategory = require("../models/LaundaryCategory");
+
 
 exports.signup = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -93,5 +95,50 @@ exports.changePassword = async (req, res) => {
     res.status(200).json({ msg: "Password updated successfully" });
   } catch (error) {
     res.status(500).json({ msg: "Server error", error: error.message });
+  }
+};
+
+
+// Create a new laundry category
+exports.createCategory = async (req, res) => {
+  try {
+    const { category, items } = req.body;
+    const newCategory = new LaundryCategory({ category, items });
+    await newCategory.save();
+    res.status(201).json({ message: "Category created successfully", category: newCategory });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Get all laundry categories
+exports.getCategories = async (req, res) => {
+  try {
+    const categories = await LaundryCategory.find();
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Update a category
+exports.updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedCategory = await LaundryCategory.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json({ message: "Category updated", category: updatedCategory });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Delete a category
+exports.deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await LaundryCategory.findByIdAndDelete(id);
+    res.status(200).json({ message: "Category deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };

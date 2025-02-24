@@ -142,3 +142,21 @@ exports.deleteCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+
+exports.updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { category, items } = req.body;
+
+    const updatedCategory = await LaundryCategory.findByIdAndUpdate(
+      id,
+      { category, items },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Category updated successfully", category: updatedCategory });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};

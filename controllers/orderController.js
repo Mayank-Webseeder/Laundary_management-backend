@@ -16,7 +16,7 @@ exports.createOrder = async (req, res) => {
 };
 
 
-// Fetch all orders
+
 exports.getOrders = async (req, res) => {
   try {
     const orders = await Order.find();

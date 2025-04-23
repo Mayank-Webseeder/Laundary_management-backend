@@ -15,6 +15,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
 const sendEmail = async (email, password, name, stationName, address) => {
   try {
     console.log("this is", email, password, name, address, stationName);

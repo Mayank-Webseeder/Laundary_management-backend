@@ -6,10 +6,12 @@ const roleMiddleware = require("../middleware/roleMiddleware"); // Middleware fo
 
 // Customer can create an order, but only view their own orders.
 router.post("/create-order", orderController.createOrder);
-router.get("/orders", orderController.getOrders); // Customer can view their orders
+router.get("/orders", orderController.getOrders);  // Customer can view their orders
 
-// Admin and Delivery can access all orders
-router.get("/admin/orders", authMiddleware, roleMiddleware("Admin"), orderController.getOrders); // Admins can view all orders
-router.get("/delivery/orders", authMiddleware, roleMiddleware("Delivery", "Admin"), orderController.getOrders); // Delivery and Admin can view all orders
+// Admin can view all orders
+router.get("/admin/orders", authMiddleware, orderController.getOrders);
+
+// Delivery and Admin can view all orders
+router.get("/delivery/orders", authMiddleware, orderController.getOrders);
 
 module.exports = router;

@@ -2,33 +2,31 @@ const Order = require('../models/OrderSchema');  // Mongoose model for orders
 const getNextOrderId = require('../utils/getNextOrderId');  // Import the order ID generator
 
 // Create a new order
+// Create a new order
 exports.createOrder = async (req, res) => {
   try {
     const { address, cloths, pickupDate, pickupTime, coupon } = req.body;
 
-    // Generate a unique order ID
     const orderId = await getNextOrderId();
 
-    // Create new order with generated orderId
     const order = new Order({
-      orderId,         // <- Custom ID field
+      orderId,
       address,
       cloths,
       pickupDate,
       pickupTime,
       coupon,
+      status: 'pending',  // ⬅️ Set default status
     });
 
-    await order.save();  // Save to database
+    await order.save();
 
-    res.status(201).json(order);  // Respond with the created order
+    res.status(201).json(order);
   } catch (error) {
     console.error("❌ Error creating order:", error);
     res.status(500).json({ message: "Error creating order", error });
   }
 };
-
-// Get all orders
 exports.getOrders = async (req, res) => {
   try {
     const orders = await Order.find();

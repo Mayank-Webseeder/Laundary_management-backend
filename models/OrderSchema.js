@@ -9,14 +9,24 @@ const ClothSchema = new mongoose.Schema({
   weight: String,
 });
 
-// If you want a custom orderId, don't manually assign it if it isn't needed.
+// Available status values: pending → picked → washed → delivered → cancelled
 const OrderSchema = new mongoose.Schema({
   address: String,
   cloths: [ClothSchema],
   coupon: { type: String, default: null },
   pickupDate: String,
   pickupTime: String,
-  orderId: { type: String, unique: true, required: true, default: () => 'order-' + new Date().getTime() },  // Auto-generate orderId if needed
+  orderId: {
+    type: String,
+    unique: true,
+    required: true,
+    default: () => 'order-' + new Date().getTime(),
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'picked', 'washed', 'delivered', 'cancelled'],
+    default: 'pending',
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', OrderSchema);
